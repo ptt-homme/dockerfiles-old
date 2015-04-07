@@ -11,7 +11,7 @@
 #
 #   # Use Symfony Installer image
 #   docker run -it -u $(id -u):$(id -u) -v $(pwd):/tmp youralias/image command OR
-#   alias symfony="docker run -it -u $(id -u):$(id -u) -v $(pwd):/tmp youralias/image then symfony command
+#   alias symfony="docker run -it -u $(id -u):$(id -u) -v $(pwd):/tmp youralias/image" then symfony command
 #
 
 # Base Docker image.
