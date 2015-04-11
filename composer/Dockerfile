@@ -17,7 +17,7 @@ MAINTAINER ptt-homme "tomcreaweb@gmail.com"
 
 # Install dependencies.
 RUN apt-get update && \
-	apt-get install -y curl php5-cli php5-json git
+	apt-get install -y curl php5-curl php5-cli php5-json git
 
 WORKDIR /srv
 
@@ -25,4 +25,4 @@ WORKDIR /srv
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
 
-CMD ["/usr/local/bin/composer"]
+ENTRYPOINT ["/usr/local/bin/composer"]
