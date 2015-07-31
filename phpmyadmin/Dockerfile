@@ -2,17 +2,23 @@ FROM php:5.6-apache
 
 MAINTAINER ptt-homme "tomcreaweb@gmail.com"
 
-# utils
-RUN apt-get update && \
-	apt-get install -y unzip && \
-	rm -r /var/lib/apt/lists/* && \
-	docker-php-ext-install mbstring mysqli
+# Install utils packages.
+RUN apt-get update && apt-get install -y \
+	bzip2 \
+	unzip \
+	zlib1g-dev \
+	--no-install-recommends && \
+	docker-php-ext-install mbstring mysqli zip && \
+	rm -rf /var/lib/apt/lists/*
 
-WORKDIR /var/www/html
+# Download phpMyAdmin from files.phpmyadmin.net.
+ENV PHPMYADMIN_VERSION=4.4.12
+ENV PHPMYADMIN_ZIP_MD5=f304876e2ac5056c320dd849195a4bf5
+WORKDIR /var/www/
 
-# phpmyadmin
-ADD http://sourceforge.net/projects/phpmyadmin/files/latest/download /var/www/html/phpmyadmin.zip
-RUN unzip -q phpmyadmin.zip && rm phpmyadmin.zip && mv `ls` phpmyadmin && ls -lah phpmyadmin/
-ADD conf/config.inc.php /var/www/html/phpmyadmin/config.inc.php
+ADD https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.zip /var/www/phpmyadmin.zip
+RUN unzip -q phpmyadmin.zip && rm phpmyadmin.zip && rm -rf html && mv `ls` html && ls -lah html/
+ADD conf/config.inc.php /var/www/html/config.inc.php
+RUN chown -R www-data:www-data /var/www/html/
 
 CMD ["apache2-foreground"]
