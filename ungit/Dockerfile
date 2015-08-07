@@ -8,11 +8,31 @@
 #   # Build Composer image
 #   docker build -t youralias/image .
 #
+#   # Run image
+#   docker run -d -p 8448:8448 -v $PWD:/home/user/src -v ~/.ssh:/home/user/.ssh youralias/image
 
 # Base Docker image.
 FROM node:0.12.7
 
 MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
+# Install utils packages.
+RUN apt-get update && apt-get install -y \
+	vim \
+	--no-install-recommends && \
+	rm -rf /var/lib/apt/lists/*
+
 # Install ungit.
 RUN npm install -g ungit
+
+# Various config.
+ENV HOME /home/user
+
+RUN useradd --create-home --home-dir $HOME user && \
+	chown user:user $HOME && \
+	echo "ssh-add $HOME/.ssh/" > $HOME/.bash_history && \
+	echo 'eval $(ssh-agent)' >> $HOME/.bash_history
+
+USER user
+
+CMD [ "/usr/local/bin/ungit" ]
