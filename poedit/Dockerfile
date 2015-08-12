@@ -18,7 +18,7 @@ FROM tomcreaweb/wine-devel
 MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
 # Download Poedit.
-ENV POEDIT_VERSION=1.8.3
+ENV POEDIT_VERSION=1.8.4
 ADD https://download.poedit.net/Poedit-${POEDIT_VERSION}-setup.exe /usr/src/Poedit-${POEDIT_VERSION}-setup.exe
 RUN echo "wine-development /usr/src/Poedit-${POEDIT_VERSION}-setup.exe" > /root/.bash_history
 
