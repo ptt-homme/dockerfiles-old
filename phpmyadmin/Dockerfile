@@ -26,8 +26,8 @@ RUN apt-get update && apt-get install -y \
 	rm -rf /var/lib/apt/lists/*
 
 # Download phpMyAdmin from files.phpmyadmin.net.
-ENV PHPMYADMIN_VERSION=4.4.13.1
-ENV PHPMYADMIN_ZIP_MD5=c589fde5452e3cf31dfe32f1fa92dcea
+ENV PHPMYADMIN_VERSION=4.5.2
+ENV PHPMYADMIN_ZIP_MD5=0b55d1c58b39d32eb13a1497566c4764
 WORKDIR /var/www/
 
 ADD https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.zip /var/www/phpmyadmin.zip
