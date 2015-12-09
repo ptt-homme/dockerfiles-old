@@ -27,7 +27,7 @@ RUN npm install -g ungit
 # Various config.
 ENV HOME /home/user
 
-RUN useradd --create-home --home-dir $HOME user && \
+RUN useradd --create-home --home-dir $HOME -g www-data user && \
 	chown user:user $HOME && \
 	echo "ssh-add $HOME/.ssh/" > $HOME/.bash_history && \
 	echo 'eval $(ssh-agent)' >> $HOME/.bash_history
