@@ -45,6 +45,9 @@ RUN curl -sS https://getcomposer.org/installer | php \
 	&& composer global require drush/drush:dev-master \
 	&& echo 'export PATH="/root/.composer/vendor/bin:$PATH"' >> /root/.bashrc
 
+# Enable uploadprogress module.
+RUN echo "extension=uploadprogress.so" > /usr/local/etc/php/conf.d/docker-php-ext-uploadprogress.ini
+
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makefiles /tmp/makefiles
 
