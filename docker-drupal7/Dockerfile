@@ -10,6 +10,7 @@
 
 # Base Docker image.
 FROM php:5.6-apache
+MAINTAINER ptt-homme "tomcreaweb@gmail.com"
 
 ENTRYPOINT ["/entrypoint.sh"]
 
