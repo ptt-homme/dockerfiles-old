@@ -40,7 +40,11 @@ RUN composer global require "laravel/installer=~1.1"
 
 # Install Laravel.
 WORKDIR /var/www
-RUN rm -rf /var/www/html && ~/.composer/vendor/bin/laravel new html
+RUN rm -rf /var/www/html \
+	&& ~/.composer/vendor/bin/laravel new html \
+	&& chown -R www-data:www-data html \
+	&& sed -i 's,html,html/public,' /etc/apache2/apache2.conf \
+	&& service apache2 restart
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
