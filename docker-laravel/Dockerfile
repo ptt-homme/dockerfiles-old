@@ -12,10 +12,8 @@
 FROM php:5.6-apache
 MAINTAINER ptt-homme "tomcreaweb@gmail.com"
 
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Enable mod-rewrite.
-RUN a2enmod rewrite
+# Enable mod-rewrite and mod-expire.
+RUN a2enmod rewrite expires
 
 # Install utils packages.
 RUN apt-get update && apt-get install -y \
@@ -32,22 +30,18 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install ftp gd mbstring mcrypt mysql pdo_mysql xmlrpc zip \
 	&& rm -rf /var/lib/apt/lists/*
 
-WORKDIR /tmp
+RUN usermod -u 1000 www-data
 
 # Install Composer && Laravel installer.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer global require "laravel/installer=~1.1"
 
-# Install Laravel.
-WORKDIR /var/www
-RUN rm -rf /var/www/html \
-	&& ~/.composer/vendor/bin/laravel new html \
-	&& chown -R www-data:www-data html \
-	&& sed -i 's,html,html/public,' /etc/apache2/apache2.conf \
-	&& service apache2 restart
+# Download Laravel.
+RUN ~/.composer/vendor/bin/laravel new laravel \
+	&& chown -R www-data:www-data laravel \
+	&& mv laravel /usr/src
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-RUN usermod -u 1000 www-data
-
-EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
