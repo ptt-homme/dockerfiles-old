@@ -10,18 +10,15 @@
 
 # Base Docker image.
 FROM php:5.6-apache
-MAINTAINER ptt-homme "tomcreaweb@gmail.com"
+MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Enable mod-rewrite and mod-expire.
+RUN a2enmod rewrite expires
 
-# Enable mod-rewrite.
-RUN a2enmod rewrite
-
-# Install utils packages.
+# Install utils packages and enable uploadprogress module.
 RUN apt-get update \
 	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
 	git \
-	libfreetype6-dev \
     libjpeg-dev \
 	libmcrypt-dev \
     libpng-dev \
@@ -31,29 +28,23 @@ RUN apt-get update \
 	unzip \
 	vim \
 	--no-install-recommends \
-    && docker-php-ext-configure gd \
-        --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu \
-        --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
+    && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
     && docker-php-ext-install ftp gd mbstring mcrypt pdo_mysql xmlrpc zip \
     && pecl install uploadprogress \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
+    && echo "extension=uploadprogress.so" > /usr/local/etc/php/conf.d/docker-php-ext-uploadprogress.ini \
 	&& rm -rf /var/lib/apt/lists/*
 
 # Install Composer & Drush.
-WORKDIR /srv
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
 	&& composer global require drush/drush:dev-master \
-	&& echo 'export PATH="/root/.composer/vendor/bin:$PATH"' >> /root/.bashrc
+	&& echo 'export PATH="/root/.composer/vendor/bin:$PATH"' >> /root/.bashrc \
+	&& echo 'alias tbch="chown -R www-data:www-data ."' >> /root/.bashrc
 
-# Enable uploadprogress module.
-RUN echo "extension=uploadprogress.so" > /usr/local/etc/php/conf.d/docker-php-ext-uploadprogress.ini
+RUN usermod -u 1000 www-data
 
 COPY docker-entrypoint.sh /entrypoint.sh
 COPY makefiles /tmp/makefiles
 
-ENV PROJECT_URL="public"
-
-COPY docker-entrypoint.sh /entrypoint.sh
-
-EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
