@@ -24,6 +24,7 @@ RUN apt-get update \
     libpng-dev \
 	libssl-dev \
 	libxml2-dev \
+	mysql-client \
 	supervisor \
 	unzip \
 	vim \
