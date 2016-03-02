@@ -18,13 +18,12 @@ MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 # Install Wine development.
 RUN apt-get update && apt-get install -y \
 	wine-development \
-	--no-install-recommends && \
-	dpkg --add-architecture i386 && \
-	apt-get update && \
-	apt-get install -y \
+	--no-install-recommends \
+	&& dpkg --add-architecture i386 \
+	&& apt-get update && apt-get install -y \
 	wine32-development \
-	--no-install-recommends && \
-	rm -rf /var/lib/apt/lists/*
+	--no-install-recommends \
+	&& rm -rf /var/lib/apt/lists/*
 
 ENV HOME /root
 WORKDIR $HOME
