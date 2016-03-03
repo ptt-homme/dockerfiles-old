@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Install Drupal 7 from a existing repo or drush make.
+# Install Drupal 7 from an existing repo or using drush make.
 if ! [ -e index.php ] && ! [ -d sites ]; then
 
 	if [ -n "$PROJECT_GIT_REPO" ]; then
