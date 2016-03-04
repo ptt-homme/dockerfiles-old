@@ -10,36 +10,29 @@
 
 # Base Docker image.
 FROM php:5.6-apache
-MAINTAINER ptt-homme "tomcreaweb@gmail.com"
+MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Enable mod-rewrite.
-RUN a2enmod rewrite
+# Enable mod-rewrite and mod-expire.
+RUN a2enmod rewrite expires
 
 # Install utils packages.
-RUN apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt-get update && apt-get install -y \
 	git \
-	libfreetype6-dev \
     libjpeg-dev \
 	libmcrypt-dev \
     libpng-dev \
 	libssl-dev \
 	libxml2-dev \
-	supervisor \
 	unzip \
 	vim \
 	--no-install-recommends \
-    && docker-php-ext-configure gd \
-        --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu \
-        --with-freetype-dir=/usr/lib/x86_64-linux-gnu \
+    && docker-php-ext-configure gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install ftp gd mbstring mcrypt mysql pdo_mysql xmlrpc zip \
-    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false -o APT::AutoRemove::SuggestsImportant=false $buildDeps \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV PROJECT_URL="public"
+RUN usermod -u 1000 www-data
 
 COPY docker-entrypoint.sh /entrypoint.sh
 
-EXPOSE 80
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
