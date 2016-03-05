@@ -23,12 +23,20 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
 	libssl-dev \
 	libxml2-dev \
+	ssmtp \
 	unzip \
 	vim \
 	--no-install-recommends \
     && docker-php-ext-configure gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu \
     && docker-php-ext-install ftp gd mbstring mcrypt mysql pdo_mysql xmlrpc zip \
 	&& rm -rf /var/lib/apt/lists/*
+
+# Add MailDev.
+RUN { \
+		echo '[CUSTOM]'; \
+		echo 'sendmail_path = /usr/sbin/ssmtp -t'; \
+	} > /usr/local/etc/php/conf.d/zzzz_custom.ini \
+	&& sed -i 's/=mail/=maildev/1' /etc/ssmtp/ssmtp.conf
 
 RUN usermod -u 1000 www-data
 
