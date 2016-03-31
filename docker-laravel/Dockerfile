@@ -10,7 +10,7 @@
 
 # Base Docker image.
 FROM php:5.6-apache
-MAINTAINER ptt-homme "tomcreaweb@gmail.com"
+MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
 # Enable mod-rewrite and mod-expire.
 RUN a2enmod rewrite expires
@@ -33,8 +33,8 @@ RUN apt-get update && apt-get install -y \
 RUN usermod -u 1000 www-data
 
 # Install Composer && Laravel installer.
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer global require "laravel/installer=~1.1"
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+	&& composer global require "laravel/installer=1.3.1"
 
 # Download Laravel.
 RUN ~/.composer/vendor/bin/laravel new laravel \
