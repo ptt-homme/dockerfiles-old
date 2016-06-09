@@ -25,6 +25,7 @@ RUN apt-get update \
 	libssl-dev \
 	libxml2-dev \
 	mysql-client \
+	ssmtp \
 	supervisor \
 	unzip \
 	vim \
@@ -35,10 +36,17 @@ RUN apt-get update \
     && echo "extension=uploadprogress.so" > /usr/local/etc/php/conf.d/docker-php-ext-uploadprogress.ini \
 	&& rm -rf /var/lib/apt/lists/*
 
+# Add MailDev.
+RUN { \
+		echo '[CUSTOM]'; \
+		echo 'sendmail_path = /usr/sbin/ssmtp -t'; \
+	} > /usr/local/etc/php/conf.d/zzzz_custom.ini \
+	&& sed -i 's/=mail/=maildev/1' /etc/ssmtp/ssmtp.conf
+
 # Install Composer & Drush.
 RUN curl -sS https://getcomposer.org/installer | php \
 	&& mv composer.phar /usr/local/bin/composer \
-	&& composer global require drush/drush:dev-master \
+	&& composer global require drush/drush:~8 \
 	&& echo 'export PATH="/root/.composer/vendor/bin:$PATH"' >> /root/.bashrc \
 	&& echo 'alias tbch="chown -R www-data:www-data ."' >> /root/.bashrc
 
