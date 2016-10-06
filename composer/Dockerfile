@@ -11,18 +11,19 @@
 #
 
 # Base Docker image.
-FROM debian:jessie
+FROM php:5-alpine
+MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
-MAINTAINER ptt-homme "tomcreaweb@gmail.com"
-
-# Install dependencies.
-RUN apt-get update && \
-	apt-get install -y curl php5-curl php5-cli php5-json git
-
-WORKDIR /srv
+RUN addgroup -g 1000 user \
+	&& adduser -D -h /home/user -G user -u 1000 user
 
 # Install Composer.
-RUN curl -sS https://getcomposer.org/installer | php
-RUN mv composer.phar /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php \
+	&& mv composer.phar /usr/local/bin/composer \
+	&& chown user:user /usr/local/bin/composer
+
+USER user
+
+WORKDIR /tmp
 
 ENTRYPOINT ["/usr/local/bin/composer"]
