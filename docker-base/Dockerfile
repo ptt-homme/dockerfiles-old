@@ -20,7 +20,7 @@ ENV LANG fr_FR.UTF-8
 ENV LANGUAGE fr_FR.UTF-8
 ENV LC_ALL fr_FR.UTF-8
 ENV USER ptt-homme
-ENV HOME /home/$USER
+ENV HOME "/home/${USER}"
 
 # Install utils packages.
 RUN apt-get update \
@@ -28,20 +28,16 @@ RUN apt-get update \
     	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Add a non ROOT user & use zsh as Shell.
-RUN addgroup --gid 1000 ${USER} \
-&& useradd -u 1000 -g ${USER} -d $HOME ${USER} \
-&& mkdir $HOME \
-&& chown ${USER}:${USER} $HOME \
-&& chsh -s /bin/zsh ${USER}
+# Add Oh My Zsh config.
+COPY src/.zshrc "${HOME}/"
 
-# Change user.
-USER ${USER}
+# Add a non ROOT user & use zsh as Shell.
+RUN addgroup --gid 1000 "${USER}" \
+	&& useradd -u 1000 -g "${USER}" -d "${HOME}" "${USER}" \
+	&& chsh -s /bin/zsh "${USER}"
 
 # Install Oh My Zsh.
-RUN git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-
-# Add Oh My Zsh config.
-COPY src/.zshrc $HOME
+RUN git clone git://github.com/robbyrussell/oh-my-zsh.git "${HOME}/.oh-my-zsh" \
+	&& chown -R "${USER}":"${USER}" "${HOME}"
 
 CMD ['zsh']
