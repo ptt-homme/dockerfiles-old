@@ -24,7 +24,7 @@ ENV HOME "/home/${USER}"
 
 # Install utils packages.
 RUN apt-get update \
-    && apt-get install -y ca-certificates curl git tmux unzip vim-tiny zip zsh \
+    && apt-get install -y ca-certificates curl git rsync tmux unzip vim-tiny zip zsh \
     	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
