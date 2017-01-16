@@ -25,7 +25,7 @@ ENV TERM "xterm-256color"
 
 # Install utils packages.
 RUN apt-get update \
-    && apt-get install -y ca-certificates curl git htop rsync tmux unzip vim-tiny zip zsh \
+    && apt-get install -y ca-certificates curl git htop rsync tmux unzip vim zip zsh \
     	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
