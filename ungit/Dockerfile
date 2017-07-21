@@ -12,27 +12,26 @@
 #   docker run -d -p 8448:8448 -v $PWD:/home/user/src -v ~/.ssh:/home/user/.ssh youralias/image
 
 # Base Docker image.
-FROM node:5.0.0
-MAINTAINER ptt-homme <tomcreaweb@gmail.com>
-
-# Install utils packages.
-RUN apt-get update && apt-get install -y \
-	vim \
-	--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/*
-
-# Install ungit.
-RUN npm install -g ungit
+FROM node:alpine
+LABEL maintainer "ptt-homme <tomcreaweb@gmail.com>"
 
 # Various config.
 ENV HOME /home/user
 
-RUN useradd --create-home --home-dir $HOME -g www-data user && \
-	chown user:user $HOME && \
-	echo "ssh-add $HOME/.ssh/" > $HOME/.bash_history && \
-	echo 'eval $(ssh-agent)' >> $HOME/.bash_history
+# Install utils packages.
+RUN apk --no-cache add \
+		git \
+		vim
+
+RUN useradd --create-home --home-dir $HOME user \
+	&& chown -R user:user $HOME \
+	&& echo "ssh-add $HOME/.ssh/" > $HOME/.bash_history \
+	&& echo 'eval $(ssh-agent)' >> $HOME/.bash_history
+
+# Install ungit.
+RUN npm install -g ungit
 
 WORKDIR $HOME
 USER user
 
-CMD [ "/usr/local/bin/ungit" ]
+CMD ["/usr/local/bin/ungit"]
