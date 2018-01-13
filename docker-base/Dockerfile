@@ -7,12 +7,17 @@
 #
 #   # Build Composer image
 #   docker build -t youralias/image .
-
 FROM ubuntu:16.04
 
 MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
-# Change language to French.
+# Install utils packages.
+RUN apt-get update \
+    && apt-get install -y apt-utils curl dialog git htop locales rsync software-properties-common tmux unzip vim zip zsh \
+	   	--no-install-recommends \
+	&& rm -rf /var/lib/apt/lists/*
+
+# Change language to french.
 RUN locale-gen fr_FR.UTF-8
 
 # Set environment variables.
@@ -23,11 +28,6 @@ ENV USER ptt-homme
 ENV HOME "/home/${USER}"
 ENV TERM "xterm-256color"
 
-# Install utils packages.
-RUN apt-get update \
-    && apt-get install -y ca-certificates curl git htop rsync tmux unzip vim zip zsh \
-    	--no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/*
 
 # Add Oh My Zsh config.
 COPY src/.zshrc "${HOME}/"
@@ -41,4 +41,4 @@ RUN addgroup --gid 1000 "${USER}" \
 RUN git clone git://github.com/robbyrussell/oh-my-zsh.git "${HOME}/.oh-my-zsh" \
 	&& chown -R "${USER}":"${USER}" "${HOME}"
 
-CMD ['zsh']
+ENTRYPOINT ["/usr/bin/zsh"]
