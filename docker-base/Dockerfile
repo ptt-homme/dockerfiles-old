@@ -13,7 +13,7 @@ MAINTAINER ptt-homme <tomcreaweb@gmail.com>
 
 # Install utils packages.
 RUN apt-get update \
-    && apt-get install -y apt-utils curl dialog git htop locales rsync software-properties-common tmux unzip vim zip zsh \
+    && apt-get install -y apt-utils curl dialog git htop locales rsync software-properties-common tmux unzip vim wget zip zsh \
 	   	--no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
