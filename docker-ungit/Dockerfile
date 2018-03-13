@@ -24,12 +24,9 @@ RUN apk add --no-cache \
 	 	openssh-client \
 		vim
 
-# Add some ssh stuffs.
-RUN echo "ssh-add $HOME/.ssh/" > $HOME/.bash_history \
-	&& echo 'eval $(ssh-agent)' >> $HOME/.bash_history
-
 # Install ungit.
 RUN npm install -g ungit
+ && chown -R node:node $HOME
 
 WORKDIR $HOME
 USER node
