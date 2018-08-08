@@ -18,7 +18,7 @@ if [ -n "$VIRTUAL_HOST" -a "$FIRST_RUN" != 0 ]; then
 	if [ "$SSL" = 'true' ]; then
 		mkdir $WEB_FOLDER/ssl
 		# Create certificate
-		openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/ST=/L=Strasbourg/O=Ptt-homme/CN=$VIRTUAL_HOST" -keyout $WEB_FOLDER/ssl/$VIRTUAL_HOST.key -out $WEB_FOLDER/ssl/$VIRTUAL_HOST.cert
+		openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=FR/L=Strasbourg/O=Ptt-homme/CN=$VIRTUAL_HOST" -keyout $WEB_FOLDER/ssl/$VIRTUAL_HOST.key -out $WEB_FOLDER/ssl/$VIRTUAL_HOST.cert
 		cat /etc/apache2/sites-available/conf/virtualhost-ssl.conf >> /etc/apache2/sites-available/001-${VIRTUAL_HOST}.conf
 		a2enmod ssl
 	fi

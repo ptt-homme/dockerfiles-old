@@ -21,6 +21,7 @@ RUN add-apt-repository -y ppa:ondrej/php \
     && apt-get update && apt-get install -y \
       apache2 \
       build-essential \
+      gnupg \
       net-tools \
       php${PHP_VERSION}-cli \
       php${PHP_VERSION}-common \
