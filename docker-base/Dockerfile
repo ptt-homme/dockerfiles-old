@@ -1,14 +1,14 @@
 # VERSION:        1.0.0
 # DESCRIPTION:    Create a base image container
-# AUTHOR:         ptt-homme <tomcreaweb@gmail.com>
+# AUTHOR:         ptt-homme <ptt.homme@gmail.com>
 # COMMENTS:
 #  	NC
 # USAGE:
 #
 #   # Build Composer image
 #   docker build -t youralias/image .
-FROM ubuntu:16.04
-LABEL maintainer "ptt-homme <tomcreaweb@gmail.com>"
+FROM ubuntu:18.04
+LABEL maintainer "ptt-homme <ptt.homme@gmail.com>"
 
 # Install utils packages.
 RUN apt-get update \
@@ -21,6 +21,7 @@ RUN apt-get update \
       locales \
       rsync \
       software-properties-common \
+      sudo \
       tmux \
       unzip \
       vim \
@@ -47,10 +48,15 @@ COPY src/.zshrc "${HOME}/"
 # Add a non ROOT user & use zsh as Shell.
 RUN addgroup --gid 1000 "${USER}" \
 	&& useradd -u 1000 -g "${USER}" -d "${HOME}" "${USER}" \
+    && usermod -aG sudo "${USER}" \
 	&& chsh -s /bin/zsh "${USER}"
+
+# Remove password prompt for sudo.
+RUN sed -i '26s/) ALL/) NOPASSWD:ALL/' /etc/sudoers
 
 # Install Oh My Zsh.
 RUN git clone git://github.com/robbyrussell/oh-my-zsh.git "${HOME}/.oh-my-zsh" \
-	&& chown -R "${USER}":"${USER}" "${HOME}"
+	&& chown -R "${USER}":"${USER}" "${HOME}" \
+    && find "${HOME}" -type f -exec chmod 644 {} \;  
 
 ENTRYPOINT ["/usr/bin/zsh"]
