@@ -23,8 +23,17 @@ if [ -n "$VIRTUAL_HOST" -a "$FIRST_RUN" != 0 ]; then
 		a2enmod ssl
 	fi
 
+	# Configure Virtualhosts
 	sed -i "s/{VIRTUAL_HOST}/$VIRTUAL_HOST/g" /etc/apache2/sites-available/001-${VIRTUAL_HOST}.conf
 	sed -i "s#{PUBLIC_PATH}#$PUBLIC_PATH#g" /etc/apache2/sites-available/001-${VIRTUAL_HOST}.conf
+
+	# Export logs to host
+	sed -i "s/\/var\/log\/php${PHP_VERSION}-fpm.log/\/proc\/self\/fd\/2/g" /etc/php/${PHP_VERSION}/fpm/php-fpm.conf
+	ln -sf /dev/stdout /var/log/apache2/${VIRTUAL_HOST}-access.log
+	ln -sf /dev/stdout /var/log/apache2/${VIRTUAL_HOST}-access-ssl.log
+	ln -sf /dev/stderr /var/log/apache2/${VIRTUAL_HOST}-error.log
+	ln -sf /dev/stderr /var/log/apache2/error.log # @TODO: Refactor :).
+
 	mkdir -p /var/www/${PUBLIC_PATH} && cd $_ && chown www-data:www-data .
 	a2ensite 001-${VIRTUAL_HOST}
 fi
@@ -32,10 +41,10 @@ fi
 # Activate Xdebug
 if [ "$XDEBUG" = 'true' -a "$FIRST_RUN" != 0 ]; then
 	IP=`netstat -nr | grep ^0.0.0.0 | awk  '{print $2}'`
-	cp /tmp/xdebug/xdebug.ini /etc/php/7.2/fpm/conf.d/20-xdebug.ini
-	sed -i "s/{REMOTE_IP}/$IP/g" /etc/php/7.2/fpm/conf.d/20-xdebug.ini
+	cp /tmp/xdebug/xdebug.ini /etc/php/${PHP_VERSION}/fpm/conf.d/20-xdebug.ini
+	sed -i "s/{REMOTE_IP}/$IP/g" /etc/php/${PHP_VERSION}/fpm/conf.d/20-xdebug.ini
 else
-	rm -rf /etc/php/7.2/fpm/conf.d/20-xdebug.ini
+	rm -rf /etc/php/${PHP_VERSION}/fpm/conf.d/20-xdebug.ini
 fi
 
 # Activate Xdebug
