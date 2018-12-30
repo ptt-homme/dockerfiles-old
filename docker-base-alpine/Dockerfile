@@ -1,14 +1,15 @@
 # VERSION:        1.0.0
 # DESCRIPTION:    Create a base image container based on Alpine Linux
-# AUTHOR:         ptt-homme <tomcreaweb@gmail.com>
+# AUTHOR:         ptt-homme <ptt.homme@gmail.com>
 # COMMENTS:
 #   NC
 # USAGE:
 #
 #   # Build Composer image
 #   docker build -t youralias/image .
-FROM alpine:3.7
-LABEL maintainer "ptt-homme <tomcreaweb@gmail.com>"
+ARG VERSION=latest
+FROM alpine:$VERSION
+LABEL maintainer "ptt-homme <ptt.homme@gmail.com>"
 
 # Install utils packages.
 RUN apk add --no-cache \ 
