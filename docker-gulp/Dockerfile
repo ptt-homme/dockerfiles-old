@@ -1,6 +1,6 @@
 # VERSION:        0.2
 # DESCRIPTION:    Create a NPM and Gulp container
-# AUTHOR:         ptt-homme <tomcreaweb@gmail.com>
+# AUTHOR:         ptt-homme <ptt.homme@gmail.com>
 # COMMENTS:
 #   NC
 # USAGE:
@@ -9,13 +9,17 @@
 #   docker build -t youralias/image .
 
 # Base Docker image.
-FROM tomcreaweb/base:alpine
-LABEL maintainer "ptt-homme <tomcreaweb@gmail.com>"
+FROM ptt-homme/base-alpine:edge
+LABEL maintainer "ptt-homme <ptt.homme@gmail.com>"
 
 # Install utils packages.
 RUN apk add --no-cache \
+    build-base \
     nodejs \
-    && /usr/bin/npm install -g gulp 
+    npm \ 
+    python \
+    && npm install -g npm@latest \
+    && npm install -g gulp
 
 # Install dumb-init.
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.1/dumb-init_1.2.1_amd64
