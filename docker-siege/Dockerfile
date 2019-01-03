@@ -33,4 +33,8 @@ RUN wget http://download.joedog.org/siege/siege-4.0.4.tar.gz \
     && make \
     && make install
 
-ENTRYPOINT ["siege", "-b", "-i", "--no-parser"]
+# 
+COPY docker-entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["siege", "-b", "-i", "--no-parser"]
