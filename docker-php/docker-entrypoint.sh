@@ -50,9 +50,8 @@ fi
 # Activate Xdebug
 # /etc/init.d/blackfire-agent
 if [ "$BLACKFIRE" = 'true' -a "$FIRST_RUN" != 0 ]; then
-	wget -O - https://packagecloud.io/gpg.key | apt-key add -
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 37BBEE3F7AD95B3F
-	echo "deb http://packages.blackfire.io/debian any main" | tee /etc/apt/sources.list.d/blackfire.list
+	wget -q -O - https://packages.blackfire.io/gpg.key | sudo apt-key add -
+	echo "deb http://packages.blackfire.io/debian any main" | sudo tee /etc/apt/sources.list.d/blackfire.list
 	apt-get update
 	apt-get install blackfire-agent blackfire-php
 fi
